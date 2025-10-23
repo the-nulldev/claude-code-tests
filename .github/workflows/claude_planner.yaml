@@ -11,6 +11,8 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      id-token: write
+      actions: read # Required for Claude to read CI results on PRs
       
     # Run only if the comment contains the trigger phrase
     if: "contains(github.event.comment.body, '@claude')"
@@ -23,11 +25,4 @@ jobs:
       - name: Claude Code Action
         uses: anthropics/claude-code-action@v1
         with:
-          # The action will use the content of the issue and the comment as its prompt
-          prompt: |
-            Issue Title: ${{ github.event.issue.title }}
-            Issue Body: ${{ github.event.issue.body }}
-            Comment: ${{ github.event.comment.body }}
-            Instruction: Based on the issue and the comment, generate a detailed plan and the corresponding skeleton code. 
-            Create a new branch and commit the code.
           anthropic_api_key: ${{ secrets.CLAUDE_AI_API_KEY }}
