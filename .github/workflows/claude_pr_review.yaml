@@ -1,0 +1,28 @@
+# .github/workflows/claude_pr_review.yml
+name: 'Claude Code PR Reviewer'
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Claude Code Review Action
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.CLAUDE_AI_API_KEY }}
+          prompt: |
+            Act as an expert code reviewer.
+            1. Provide a brief, high-level summary of the changes in this pull request.
+            2. Review the code for potential bugs, security vulnerabilities, and deviations from best practices.
+            3. Post your findings as comments directly on the relevant lines of code in the PR.
