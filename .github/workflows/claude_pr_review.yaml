@@ -20,9 +20,11 @@ jobs:
 
       - name: Claude Code Review Action
         uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           anthropic_api_key: ${{ secrets.CLAUDE_AI_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Act as an expert code reviewer.
             1. Provide a brief, high-level summary of the changes in this pull request.
