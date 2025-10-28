@@ -1,0 +1,27 @@
+# .github/workflows/claude_planner.yml
+name: 'Claude Planner'
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  claude_code:
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    # Run only if the comment contains the trigger phrase
+    if: "contains(github.event.comment.body, '@assistant')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: "@assistant"
