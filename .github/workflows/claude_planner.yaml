@@ -13,9 +13,7 @@ jobs:
       issues: write
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
-      
-    # Run only if the comment contains the trigger phrase
-    if: "contains(github.event.comment.body, '@claude')"
+
     runs-on: ubuntu-latest
 
     steps:
