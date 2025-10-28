@@ -11,6 +11,8 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      id-token: write
+      actions: read
 
     # Run only if the comment contains the trigger phrase
     if: "contains(github.event.comment.body, '@assistant')"
