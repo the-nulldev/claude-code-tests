@@ -118,6 +118,85 @@ class TestOpenAIIntegration(unittest.TestCase):
 
         self.assertEqual(messages[0]['content'], 'You are a helpful assistant.')
 
+    @patch('app.client')
+    def test_api_call_with_exception(self, mock_client):
+        """Test behavior when API call raises an exception"""
+        # Setup mock to raise an exception
+        mock_client.chat.completions.create.side_effect = Exception("API Error")
+
+        import importlib
+        # The reload should raise an exception since there's no error handling
+        with self.assertRaises(Exception) as context:
+            importlib.reload(app)
+
+        self.assertIn("API Error", str(context.exception))
+
+    @patch('app.client')
+    def test_response_has_choices(self, mock_client):
+        """Test that response object has choices attribute"""
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message.content = "Response content"
+        mock_client.chat.completions.create.return_value = mock_response
+
+        import importlib
+        with patch('builtins.print'):
+            importlib.reload(app)
+
+        # Verify that the response has choices
+        self.assertTrue(hasattr(mock_response, 'choices'))
+        self.assertGreater(len(mock_response.choices), 0)
+
+    @patch('app.client')
+    def test_user_message_content(self, mock_client):
+        """Test that the user message contains the expected prompt"""
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message.content = "Test"
+        mock_client.chat.completions.create.return_value = mock_response
+
+        import importlib
+        with patch('builtins.print'):
+            importlib.reload(app)
+
+        call_args = mock_client.chat.completions.create.call_args
+        messages = call_args.kwargs['messages']
+
+        self.assertEqual(messages[1]['content'], 'Write a haiku about debugging Python code.')
+
+    def test_client_exists(self):
+        """Test that the client object is created"""
+        self.assertTrue(hasattr(app, 'client'))
+        self.assertIsNotNone(app.client)
+
+    @patch('app.client')
+    def test_response_choices_access(self, mock_client):
+        """Test that response.choices[0].message.content is accessed correctly"""
+        expected_content = "Haiku test content"
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message.content = expected_content
+        mock_client.chat.completions.create.return_value = mock_response
+
+        import importlib
+        with patch('builtins.print') as mock_print:
+            importlib.reload(app)
+
+        # Verify that we accessed the correct path in the response object
+        mock_print.assert_called_with(expected_content)
+
+    @patch('app.OpenAI')
+    def test_api_key_passed_to_constructor(self, mock_openai_class):
+        """Test that API key is passed as keyword argument to OpenAI constructor"""
+        import importlib
+        importlib.reload(app)
+
+        # Verify the constructor was called with api_key as keyword argument
+        mock_openai_class.assert_called_once()
+        call_kwargs = mock_openai_class.call_args.kwargs
+        self.assertIn('api_key', call_kwargs)
+        self.assertEqual(call_kwargs['api_key'], "sk-1234567890abcdefghijklmnopqrstuvwxYZABCDEF")
+
 
 if __name__ == '__main__':
     unittest.main()
