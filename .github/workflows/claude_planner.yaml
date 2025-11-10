@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
       issues: write
       id-token: write
-      actions: read # Required for Claude to read CI results on PRs
+      actions: read 
 
     runs-on: ubuntu-latest
 
@@ -24,4 +24,3 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.CLAUDE_AI_API_KEY }}
-          trigger_phrase: "@ai_assistant"
