@@ -24,3 +24,4 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.CLAUDE_AI_API_KEY }}
+          trigger_phrase: "@claude"
