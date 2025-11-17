@@ -28,3 +28,7 @@ jobs:
             1. Provide a brief, high-level summary of the changes in this pull request.
             2. Review the code for potential security vulnerabilities ONLY.
             3. Post your findings as comments DIRECTLY on the relevant lines of code in the PR.
+          claude_args: |
+            --system-prompt "You are an expert Go developer. Always provide concise, actionable feedback with code examples."
+            --model claude-sonnet-4-5-20250929
+            --allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
